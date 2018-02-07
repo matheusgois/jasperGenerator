@@ -1,214 +1,220 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.util.Scanner;
 import java.util.UUID;
 
 public class Main {
 	
-	public static void main(String[] args) throws Exception {
+	public String gerarJRXML() throws Exception{
 		
+		Archive arc = new Archive();
+		StringBuilder sb = new StringBuilder();
 		Scanner scan = new Scanner(System.in);
+		
+		arc.setQtdColunas(9);
+		
+		String orientation = "Portrait";
+		int pageWidth = 595;
+		int pageHeight = 842;
+		
+		if (arc.getQtdColunas() > 585){
+			orientation = "Landscape";
+			pageWidth = 842;
+			pageHeight = 595;
+		}
+				
+		
 		
 		System.out.println("---------------------------------------------------------------");
 		System.out.println("----------------------- JASPER GENERATE -----------------------");
 		System.out.println("---------------------------------------------------------------");
+
+		
 		
 		System.out.println("Digite o nome do seu arquivo de extensão JRXML: ");
-		String nomeArquivo = scan.nextLine();
-		
+		arc.setNomeArquivo("teste");  //(scan.nextLine());
+			
 		System.out.println("Digite um título para seu arquivo: ");
-		String title = scan.nextLine();
+		arc.setTitle("teste");  //(scan.nextLine());
 		
 		System.out.println("Digite uma descrição: ");
-		String description = scan.nextLine();
+		arc.setDescription("teste");  //(scan.nextLine());
 		
 		System.out.println("Digite o nome da Detail Principal: ");
-		String nameDetail = scan.nextLine();
+		arc.setNameDetail("teste");  //(scan.nextLine());
 		
 		System.out.println("Digite o nome da Field Principal: ");
-		String dataField = scan.nextLine();
-		
+		arc.setDataField("teste");  //(scan.nextLine());
+
 		System.out.println("Digite o numero de grupos que deseja: ");
-		int nGroups = scan.nextInt();
-		
+		arc.setnGroups(3);  //(scan.nextInt());
+
 		System.out.println("AGUARDE SEU ARQUIVO SER GERADO!! ");
 		
 		
 		
 		try {
-			File file = new File("C:\\develop\\jaspers\\gerador\\"+ nomeArquivo +".jrxml");
-			FileWriter writer = new FileWriter(file, true);
-			PrintWriter out = new PrintWriter(writer, true);
-			
-			
-			out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+			sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 			
 			//Cabecalho principal
-			out.write("<jasperReport xmlns=\"http://jasperreports.sourceforge.net/jasperreports\" ");
-			out.write("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
-			out.write("xsi:schemaLocation=\"http://jasperreports.sourceforge.net/jasperreports "
+			sb.append("<jasperReport xmlns=\"http://jasperreports.sourceforge.net/jasperreports\" ");
+			sb.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
+			sb.append("xsi:schemaLocation=\"http://jasperreports.sourceforge.net/jasperreports "
 					+ "http://jasperreports.sourceforge.net/xsd/jasperreport.xsd\" ");
-			out.write("name=\""+ nomeArquivo +"\" ");
+			sb.append("name=\""+ arc.getNomeArquivo() +"\" ");
 			//comentado para ser usado a linguagem java
-			//out.write("language=\"groovy\" ");
-			out.write("pageWidth=\"595\" ");
-			out.write("pageHeight=\"842\" ");
-			out.write("columnWidth=\"535\" ");
-			out.write("leftMargin=\"20\" ");
-			out.write("rightMargin=\"20\" ");
-			out.write("topMargin=\"20\" ");
-			out.write("bottomMargin=\"20\" ");
-			out.println("uuid=\""+ UUID.randomUUID().toString() +"\">");
+			sb.append("language=\"java\" ");
+			sb.append("orientation=\""+orientation+"\" ");
+			sb.append("pageWidth=\""+pageWidth+"\" ");
+			sb.append("pageHeight=\""+pageHeight+"\" ");
+			sb.append("columnWidth=\"535\" ");
+			sb.append("leftMargin=\"20\" ");
+			sb.append("rightMargin=\"20\" ");
+			sb.append("topMargin=\"20\" ");
+			sb.append("bottomMargin=\"20\" ");
+			sb.append("uuid=\""+ UUID.randomUUID().toString() +"\">");
 			
 			//verifica se contem group
 			
 			//--------------------------- GROUPS --------------------------- 
-			for(int i=0; i < nGroups; i++) {	
-				out.println("<group name=\"Group"+i+"\">");
-				out.println("<groupHeader>");
-				out.println("<band height=\"33\">");
+			for(int i=0; i < arc.getnGroups(); i++) {	
+				sb.append("<group name=\"Group"+i+"\">");
+				sb.append("<groupHeader>");
+				sb.append("<band height=\"33\">");
 				
-				out.println("<staticText>");
-				out.println("<reportElement mode=\"Opaque\" x=\"0\" y=\"0\" "
+				sb.append("<staticText>");
+				sb.append("<reportElement mode=\"Opaque\" x=\"0\" y=\"0\" "
 						+ "width=\"100\" height=\"32\" forecolor=\"#666666\" "
 						+ "backcolor=\"#E6E6E6\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-				out.println("<textElement>");
-				out.println("<font size=\"12\"/>");
-				out.println("</textElement>");
-				out.println("<text><![CDATA[G"+i+"Label]]></text>");
-				out.println("</staticText>");
+				sb.append("<textElement>");
+				sb.append("<font size=\"12\"/>");
+				sb.append("</textElement>");
+				sb.append("<text><![CDATA[G"+i+"Label]]></text>");
+				sb.append("</staticText>");
 				
-				out.println("<textField>");
-				out.println("<reportElement mode=\"Opaque\" x=\"100\" y=\"0\""
-						+ " width=\"455\" height=\"32\" forecolor=\"#006699\" "
+				sb.append("<textField>");
+				sb.append("<reportElement mode=\"Opaque\" x=\"100\" y=\"0\""
+						+ " width=\""+(pageWidth - 100)+"\" height=\"32\" forecolor=\"#006699\" "
 						+ "backcolor=\"#E6E6E6\" uuid=\""+UUID.randomUUID().toString()+"\"/>");  
-				out.println("<textElement>");
-				out.println("<font size=\"24\" isBold=\"true\"/>");
-				out.println("</textElement>");
-				out.println("<textFieldExpression><![CDATA[\"G"+i+"Field\"]]></textFieldExpression>");
-				out.println("</textField>");
-				out.println("<line>");
-				out.println("<reportElement x=\"-20\" y=\"32\" width=\"595\" height=\"1\" forecolor=\"#666666\" "
+				sb.append("<textElement>");
+				sb.append("<font size=\"24\" isBold=\"true\"/>");
+				sb.append("</textElement>");
+				sb.append("<textFieldExpression><![CDATA[\"G"+i+"Field\"]]></textFieldExpression>");
+				sb.append("</textField>");
+				sb.append("<line>");
+				sb.append("<reportElement x=\"-20\" y=\"32\" width=\""+pageWidth+"\" height=\"1\" forecolor=\"#666666\" "
 						+ "uuid=\""+UUID.randomUUID().toString()+"\"/>"); 
-				out.println("</line>");
-				out.println("</band>");
-				out.println("</groupHeader>");
-				out.println("<groupFooter>");
-				out.println("<band/>");
-				out.println("</groupFooter>");
-				out.println("</group>");
+				sb.append("</line>");
+				sb.append("</band>");
+				sb.append("</groupHeader>");
+				sb.append("<groupFooter>");
+				sb.append("<band/>");
+				sb.append("</groupFooter>");
+				sb.append("</group>");
 			}
 			
-			out.println("<background>");
-			out.println("<band/>");
-			out.println("</background>"); 
-			out.println("<title>");
-			out.println("<band height=\"72\">");
-			out.println("<frame>");
-			out.println("<reportElement mode=\"Opaque\" x=\"-20\" y=\"-20\" width=\"595\" height=\"92\" "
+			sb.append("<background>");
+			sb.append("<band/>");
+			sb.append("</background>"); 
+			sb.append("<title>");
+			sb.append("<band height=\"72\">");
+			sb.append("<frame>");
+			sb.append("<reportElement mode=\"Opaque\" x=\"-20\" y=\"-20\" width=\""+pageWidth+"\" height=\"92\" "
 					+ "backcolor=\"#006699\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-			out.println("<staticText>");
-			out.println("<reportElement x=\"20\" y=\"20\" width=\"234\" height=\"43\" forecolor=\"#FFFFFF\" "
+			sb.append("<staticText>");
+			sb.append("<reportElement x=\"20\" y=\"20\" width=\"234\" height=\"43\" forecolor=\"#FFFFFF\" "
 					+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-			out.println("<textElement>");
-			out.println("<font size=\"34\" isBold=\"true\"/>");
-			out.println("</textElement>");
-			out.println("<text><![CDATA["+title+"]]></text>");
-			out.println("</staticText>");
-			out.println("<staticText>");
-			out.println("<reportElement x=\"395\" y=\"43\" width=\"180\" height=\"20\" forecolor=\"#FFFFFF\" "
+			sb.append("<textElement>");
+			sb.append("<font size=\"34\" isBold=\"true\"/>");
+			sb.append("</textElement>");
+			sb.append("<text><![CDATA["+arc.getTitle()+"]]></text>");
+			sb.append("</staticText>");
+			sb.append("<staticText>");
+			sb.append("<reportElement x=\"395\" y=\"43\" width=\"180\" height=\"20\" forecolor=\"#FFFFFF\" "
 					+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
 			
-			out.println("<textElement textAlignment=\"Right\">");
-			out.println("<font size=\"14\" isBold=\"false\"/>");
-			out.println("</textElement>");
-			out.println("<text><![CDATA["+description+"]]></text>");
-			out.println("</staticText>");
-			out.println("</frame>");
-			out.println("</band>");
-			out.println("</title>");
+			sb.append("<textElement textAlignment=\"Right\">");
+			sb.append("<font size=\"14\" isBold=\"false\"/>");
+			sb.append("</textElement>");
+			sb.append("<text><![CDATA["+arc.getDescription()+"]]></text>");
+			sb.append("</staticText>");
+			sb.append("</frame>");
+			sb.append("</band>");
+			sb.append("</title>");
 			
 			
-			out.println("<pageHeader>");
-			out.println("<band height=\"13\"/>");
-			out.println("</pageHeader>");
-			out.println("<columnHeader>");
-			out.println("<band height=\"21\">");
-			out.println("<staticText>");
-			out.println("<reportElement mode=\"Opaque\" x=\"0\" y=\"0\" width=\"183\" height=\"20\" forecolor=\"#006699\" "
+			sb.append("<pageHeader>");
+			sb.append("<band height=\"13\"/>");
+			sb.append("</pageHeader>");
+			sb.append("<columnHeader>");
+			sb.append("<band height=\"21\">");
+			sb.append("<staticText>");
+			sb.append("<reportElement mode=\"Opaque\" x=\"0\" y=\"0\" width=\"183\" height=\"20\" forecolor=\"#006699\" "
 					+ "backcolor=\"#E6E6E6\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-			out.println("<textElement textAlignment=\"Center\">");
-			out.println("<font size=\"14\" isBold=\"true\"/>");
-			out.println("</textElement>");
-			out.println("<text><![CDATA["+nameDetail+"]]></text>");
-			out.println("</staticText>");
-			out.println("<line>");
-			out.println("<reportElement x=\"-20\" y=\"20\" width=\"595\" height=\"1\" forecolor=\"#666666\""
+			sb.append("<textElement textAlignment=\"Center\">");
+			sb.append("<font size=\"14\" isBold=\"true\"/>");
+			sb.append("</textElement>");
+			sb.append("<text><![CDATA["+arc.getNameDetail()+"]]></text>");
+			sb.append("</staticText>");
+			sb.append("<line>");
+			sb.append("<reportElement x=\"-20\" y=\"20\" width=\""+pageWidth+"\" height=\"1\" forecolor=\"#666666\""
 					+ " uuid=\""+UUID.randomUUID().toString()+"\"/>");
-			out.println("</line>");
-			out.println("</band>");
-			out.println("</columnHeader>");
+			sb.append("</line>");
+			sb.append("</band>");
+			sb.append("</columnHeader>");
 			
 			
-			out.println("<detail>");
-			out.println("<band height=\"20\">");
-			out.println("<textField isStretchWithOverflow=\"true\">");
-			out.println("<reportElement x=\"0\" y=\"0\" width=\"183\" height=\"20\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-			out.println("<textElement>");
-			out.println("<font size=\"14\"/>");
-			out.println("</textElement>");
-			out.println("<textFieldExpression><![CDATA[\""+dataField+"\"]]></textFieldExpression>");
-			out.println("</textField>");
-			out.println("<line>");
-			out.println("<reportElement positionType=\"FixRelativeToBottom\" x=\"0\" y=\"19\" width=\"555\" height=\"1\" "
+			sb.append("<detail>");
+			sb.append("<band height=\"20\">");
+			sb.append("<textField isStretchWithOverflow=\"true\">");
+			sb.append("<reportElement x=\"0\" y=\"0\" width=\"183\" height=\"20\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
+			sb.append("<textElement>");
+			sb.append("<font size=\"14\"/>");
+			sb.append("</textElement>");
+			sb.append("<textFieldExpression><![CDATA[\""+arc.getDataField()+"\"]]></textFieldExpression>");
+			sb.append("</textField>");
+			sb.append("<line>");
+			sb.append("<reportElement positionType=\"FixRelativeToBottom\" x=\"0\" y=\"19\" width=\""+(pageWidth - 40)+"\" height=\"1\" "
 					+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-			out.println("</line>");
-			out.println("</band>");
-			out.println("</detail>");
+			sb.append("</line>");
+			sb.append("</band>");
+			sb.append("</detail>");
 			
 			
-			out.println("<columnFooter>");
-			out.println("<band/>");
-			out.println("</columnFooter>");
+			sb.append("<columnFooter>");
+			sb.append("<band/>");
+			sb.append("</columnFooter>");
 	
 			
-			out.println("<pageFooter>");
-			out.println("<band height=\"17\">");
-			out.println("<textField>");
-			out.println("<reportElement mode=\"Opaque\" x=\"0\" y=\"4\" width=\"515\" height=\"13\" backcolor=\"#E6E6E6\" "
+			sb.append("<pageFooter>");
+			sb.append("<band height=\"17\">");
+			sb.append("<textField>");
+			sb.append("<reportElement mode=\"Opaque\" x=\"0\" y=\"4\" width=\""+(pageWidth - 80)+"\" height=\"13\" backcolor=\"#E6E6E6\" "
 					+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-			out.println("<textElement textAlignment=\"Right\"/>");
-			out.println("<textFieldExpression><![CDATA[\"Page \"+$V{PAGE_NUMBER}+\" of\"]]></textFieldExpression>");
-			out.println("</textField>");
-			out.println("<textField evaluationTime=\"Report\">");
-			out.println("<reportElement mode=\"Opaque\" x=\"515\" y=\"4\" width=\"40\" height=\"13\" backcolor=\"#E6E6E6\" "
+			sb.append("<textElement textAlignment=\"Right\"/>");
+			sb.append("<textFieldExpression><![CDATA[\"Page \"+$V{PAGE_NUMBER}+\" of\"]]></textFieldExpression>");
+			sb.append("</textField>");
+			sb.append("<textField evaluationTime=\"Report\">");
+			sb.append("<reportElement mode=\"Opaque\" x=\"515\" y=\"4\" width=\"40\" height=\"13\" backcolor=\"#E6E6E6\" "
 					+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-			out.println("<textFieldExpression><![CDATA[\" \" + $V{PAGE_NUMBER}]]></textFieldExpression>");
-			out.println("</textField>");
-			out.println("<textField pattern=\"EEEEE dd MMMMM yyyy\">");
-			out.println("<reportElement x=\"0\" y=\"4\" width=\"100\" height=\"13\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-			out.println("<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>");
-			out.println("</textField>");
-			out.println("</band>");
-			out.println("</pageFooter>");
+			sb.append("<textFieldExpression><![CDATA[\" \" + $V{PAGE_NUMBER}]]></textFieldExpression>");
+			sb.append("</textField>");
+			sb.append("<textField pattern=\"EEEEE dd MMMMM yyyy\">");
+			sb.append("<reportElement x=\"0\" y=\"4\" width=\"100\" height=\"13\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
+			sb.append("<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>");
+			sb.append("</textField>");
+			sb.append("</band>");
+			sb.append("</pageFooter>");
 			
+			sb.append("<summary>");
+			sb.append("<band/>");
+			sb.append("</summary>");
 			
-			
-			out.println("<summary>");
-			out.println("<band/>");
-			out.println("</summary>");
-			
-			
-			out.println("</jasperReport>");
-			
-			out.close();
-			writer.close();
+			sb.append("</jasperReport>");
 			
 			System.out.println("GENERATE SUCCESS!");
 		
 		}catch(Exception e) {
 			throw new Exception(e);
 		}
+		return sb.toString();
 	}
 }
