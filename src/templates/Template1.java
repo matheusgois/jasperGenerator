@@ -1,7 +1,10 @@
+package templates;
 import java.util.Scanner;
 import java.util.UUID;
 
-public class Main {
+import model.Archive;
+
+public class Template1 {
 	
 	public String gerarJRXML() throws Exception{
 		
