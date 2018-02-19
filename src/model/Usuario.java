@@ -1,7 +1,5 @@
 package model;
 
-import java.sql.Date;
-
 public class Usuario {
 
 	private String id;
@@ -18,6 +16,28 @@ public class Usuario {
 	private String passwordPolicy;
 	private String dateLastChangeLogin;
 	private String administrator;
+	private String funcionario;
+	private String cadastrado;
+	private String obstruido;
+		
+	public String getFuncionario() {
+		return funcionario;
+	}
+	public void setFuncionario(String funcionario) {
+		this.funcionario = funcionario;
+	}
+	public String getCadastrado() {
+		return cadastrado;
+	}
+	public void setCadastrado(String cadastrado) {
+		this.cadastrado = cadastrado;
+	}
+	public String getObstruido() {
+		return obstruido;
+	}
+	public void setObstruido(String obstruido) {
+		this.obstruido = obstruido;
+	}
 	public String getId() {
 		return id;
 	}

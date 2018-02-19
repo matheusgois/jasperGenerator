@@ -41,7 +41,7 @@ public class JasperManager {
 		JRPdfExporter exporter = new JRPdfExporter();
 		
 		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput("exports\\MeuPeixeq.pdf"));
+		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput("exports\\7.pdf"));
 		exporter.exportReport();		
 		
 		System.out.println("Generate Success!");

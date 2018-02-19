@@ -8,11 +8,42 @@ public class Template3 {
 		StringBuilder sb = new StringBuilder();
 		
 		String columns[] = {"id","name","usercode","password","idDomain","status","registration","email","dateCreated",
-				"dateLastLogin","passwordChange","passwordPolicy","dateLastChangeLogin","administrator"};
+				"dateLastLogin","passwordChange","passwordPolicy","dateLastChangeLogin","administrator", "funcionario",
+				"cadastrado", "obstruido"};
 		
-		int widthColumns[] = {44,100,89,100,76,64,108,100,100,107,113,122,159,108};
+		int widthColumns[] = {44,100,89,100,76,64,108,100,100,107,113,122,159,108,100,100,100};
+		int heightBand = 0;
 		
+		//tamanho folha
+		int width = 595;
+		int height = 842;
 		
+		//tamanho da folha para conteudo
+		int wPage = 555;
+		//int wPage2 = 499;
+		String orientation = "Portrait";
+		
+		double total = 0;
+		for(int i=0;i<widthColumns.length;i++) {
+			total += widthColumns[i];
+		} 
+		
+		if(total > 555) {
+			orientation = "Landscape";
+			width = 842;
+			height = 595;
+			wPage = 802;
+			//wPage2 = 739;
+		}
+		
+		double result = Math.ceil(total / 750);
+		
+		for(int i=0;i<result;i++) {
+			heightBand += 15;
+		}
+		//System.out.println("result "+result);
+		//System.out.println("band inicial"+heightBand);
+
 		int x = 11;
 		int y = 0;
 		
@@ -21,8 +52,10 @@ public class Template3 {
 				+ "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
 				+ "xsi:schemaLocation=\"http://jasperreports.sourceforge.net/jasperreports "
 				+ "http://jasperreports.sourceforge.net/xsd/jasperreport.xsd\" name=\"report1\" "
-				+ "language=\"java\" pageWidth=\"842\" pageHeight=\"595\" "
-				+ "orientation=\"Landscape\" columnWidth=\"802\" "
+				+ "language=\"java\" "
+				+ "pageWidth=\""+width+"\" pageHeight=\""+height+"\" "
+				+ "orientation=\""+orientation+"\" "
+				+ "columnWidth=\""+wPage+"\" "
 				+ "leftMargin=\"20\" rightMargin=\"20\" topMargin=\"20\" bottomMargin=\"20\" "
 				+ "uuid=\""+UUID.randomUUID().toString()+"\">");
 		
@@ -37,30 +70,13 @@ public class Template3 {
 			sb.append("<field name=\""+columns[i]+"\" class=\"java.lang.String\"/>");
 		}
 		
-		/*
-		sb.append("<field name=\"id\" class=\"java.lang.Integer\"/>");
-		sb.append("<field name=\"name\" class=\"java.lang.String\"/>");
-		sb.append("<field name=\"usercode\" class=\"java.lang.String\"/>");
-		sb.append("<field name=\"password\" class=\"java.lang.String\"/>");
-		sb.append("<field name=\"idDomain\" class=\"java.lang.Integer\"/>");
-		sb.append("<field name=\"status\" class=\"java.lang.String\"/>");
-		sb.append("<field name=\"registration\" class=\"java.lang.String\"/>");
-		sb.append("<field name=\"email\" class=\"java.lang.String\"/>");
-		sb.append("<field name=\"dateCreated\" class=\"java.lang.Long\"/>");
-		sb.append("<field name=\"dateLastLogin\" class=\"java.lang.Long\"/>");
-		sb.append("<field name=\"passwordChange\" class=\"java.lang.Boolean\"/>");
-		sb.append("<field name=\"passwordPolicy\" class=\"java.lang.String\"/>");
-		sb.append("<field name=\"dateLastChangeLogin\" class=\"java.lang.Long\"/>");
-		sb.append("<field name=\"administrator\" class=\"java.lang.Boolean\"/>");
-		*/
-		
 		sb.append("<background>");
 		sb.append("<band splitType=\"Stretch\"/>");
 		sb.append("</background>");
 		sb.append("<pageHeader>");
 		sb.append("<band height=\"47\" splitType=\"Stretch\">");
 		sb.append("<staticText>");
-		sb.append("<reportElement x=\"0\" y=\"15\" width=\"802\" height=\"26\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
+		sb.append("<reportElement x=\"0\" y=\"15\" width=\""+wPage+"\" height=\"26\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
 		sb.append("<textElement textAlignment=\"Center\">");
 		sb.append("<font size=\"12\" isBold=\"true\"/>");
 		sb.append("</textElement>");
@@ -71,11 +87,11 @@ public class Template3 {
 		//sb.append("<imageExpression><![CDATA[$P{base_dir}]]></imageExpression>");
 		sb.append("</image>");
 		sb.append("<textField pattern=\"dd/MM/yyyy HH:mm:ss\">");
-		sb.append("<reportElement x=\"702\" y=\"15\" width=\"100\" height=\"20\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
+		sb.append("<reportElement x=\""+(wPage-100)+"\" y=\"15\" width=\"100\" height=\"20\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
 		sb.append("<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>");
 		sb.append("</textField>");
 		sb.append("<textField>");
-		sb.append("<reportElement x=\"0\" y=\"27\" width=\"802\" height=\"20\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
+		sb.append("<reportElement x=\"0\" y=\"27\" width=\""+wPage+"\" height=\"20\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
 		sb.append("<textElement textAlignment=\"Center\" verticalAlignment=\"Middle\">");
 		sb.append("<font fontName=\"Courier New\" size=\"8\" isBold=\"false\"/>");
 		sb.append("</textElement>");
@@ -86,17 +102,32 @@ public class Template3 {
 		
 		
 		sb.append("<columnHeader>");
-		sb.append("<band height=\"37\" splitType=\"Stretch\">");
+		sb.append("<band height=\""+heightBand+"\" splitType=\"Stretch\">");
 		
+		
+		int l = 1;
+		int next = 2;
 		//titulo
 		for(int i=0;i<columns.length;i++) {
-			if(x > 750) {
+			if(x > (wPage - 50)) {
+				l += 1;
+			}
+			
+			//linha 2
+			if(l == 2 && next == 2) {
 				y = 14;
 				x = 67;
+				next += 1;
+			}
+			//linha 3
+			if(l == 3 && next == 3) {
+				y = 29;
+				x = 95;
+				next += 1;
 			}
 			
 			sb.append("<staticText>");
-			sb.append("<reportElement x=\""+x+"\" y=\""+y+"\" width=\""+widthColumns[i]+"\" height=\"17\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
+			sb.append("<reportElement x=\""+x+"\" y=\""+y+"\" width=\""+widthColumns[i]+"\" height=\"14\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
 			sb.append("<textElement verticalAlignment=\"Middle\">");
 			sb.append("<font fontName=\"Courier New\" size=\"10\" isBold=\"true\"/>");
 			sb.append("</textElement>");
@@ -106,130 +137,22 @@ public class Template3 {
 			x = x + widthColumns[i];
 		}
 		
-		/*
-		sb.append("<staticText>");
-		sb.append("<reportElement x=\"11\" y=\"1\" width=\"44\" height=\"17\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Middle\">");
-		sb.append("<font fontName=\"Courier New\" size=\"10\" isBold=\"true\"/>");
-		sb.append("</textElement>");
-		sb.append("<text><![CDATA[Id]]></text>");
-		sb.append("</staticText>");
-		
-		sb.append("<staticText>");
-		sb.append("<reportElement x=\"54\" y=\"1\" width=\"99\" height=\"17\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Middle\">");
-		sb.append("<font fontName=\"Courier New\" size=\"10\" isBold=\"true\"/>");
-		sb.append("</textElement>");
-		sb.append("<text><![CDATA[Nome]]></text>");
-		sb.append("</staticText>");
-		
-		sb.append("<staticText>");
-		sb.append("<reportElement x=\"152\" y=\"1\" width=\"91\" height=\"17\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Middle\">");
-		sb.append("<font fontName=\"Courier New\" size=\"10\" isBold=\"true\"/>");
-		sb.append("</textElement>");
-		sb.append("<text><![CDATA[Código Usuario]]></text>");
-		sb.append("</staticText>");
-		
-		sb.append("<staticText>");
-		sb.append("<reportElement x=\"243\" y=\"1\" width=\"75\" height=\"17\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Middle\">");
-		sb.append("<font fontName=\"Courier New\" size=\"10\" isBold=\"true\"/>");
-		sb.append("</textElement>");
-		sb.append("<text><![CDATA[Dominio]]></text>");
-		sb.append("</staticText>");
-		
-		sb.append("<staticText>");
-		sb.append("<reportElement x=\"317\" y=\"1\" width=\"64\" height=\"17\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Middle\">");
-		sb.append("<font fontName=\"Courier New\" size=\"10\" isBold=\"true\"/>");
-		sb.append("</textElement>");
-		sb.append("<text><![CDATA[Situação]]></text>");
-		sb.append("</staticText>");
-		
-		sb.append("<staticText>");
-		sb.append("<reportElement x=\"381\" y=\"1\" width=\"108\" height=\"17\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Middle\">");
-		sb.append("<font fontName=\"Courier New\" size=\"10\" isBold=\"true\"/>");
-		sb.append("</textElement>");
-		sb.append("<text><![CDATA[Registro]]></text>");
-		sb.append("</staticText>");
-		
-		sb.append("<staticText>");
-		sb.append("<reportElement x=\"489\" y=\"1\" width=\"101\" height=\"17\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Middle\">");
-		sb.append("<font fontName=\"Courier New\" size=\"10\" isBold=\"true\"/>");
-		sb.append("</textElement>");
-		sb.append("<text><![CDATA[Email]]></text>");
-		sb.append("</staticText>");
-		*/
-		
 		sb.append("<line>");
-		sb.append("<reportElement x=\"0\" y=\"36\" width=\"802\" height=\"1\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
+		sb.append("<reportElement x=\"0\" y=\"0\" width=\""+wPage+"\" height=\"1\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
 		sb.append("</line>");
 		sb.append("<line>");
-		sb.append("<reportElement x=\"0\" y=\"0\" width=\"802\" height=\"1\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
+		sb.append("<reportElement x=\"0\" y=\""+(y+14)+"\" width=\""+wPage+"\" height=\"1\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
 		sb.append("</line>");
-		
-		/*
-		sb.append("<staticText>");
-		sb.append("<reportElement x=\"589\" y=\"1\" width=\"100\" height=\"17\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Middle\">");
-		sb.append("<font fontName=\"Courier New\" size=\"10\" isBold=\"true\"/>");
-		sb.append("</textElement>");
-		sb.append("<text><![CDATA[Data criação]]></text>");
-		sb.append("</staticText>");
-		
-		sb.append("<staticText>");
-		sb.append("<reportElement x=\"688\" y=\"1\" width=\"107\" height=\"17\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Middle\">");
-		sb.append("<font fontName=\"Courier New\" size=\"10\" isBold=\"true\"/>");
-		sb.append("</textElement>");
-		sb.append("<text><![CDATA[Último login]]></text>");
-		sb.append("</staticText>");
-		
-		sb.append("<staticText>");
-		sb.append("<reportElement x=\"67\" y=\"18\" width=\"113\" height=\"17\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Middle\">");
-		sb.append("<font fontName=\"Courier New\" size=\"10\" isBold=\"true\"/>");
-		sb.append("</textElement>");
-		sb.append("<text><![CDATA[Alteração senha]]></text>");
-		sb.append("</staticText>");
-		
-		sb.append("<staticText>");
-		sb.append("<reportElement x=\"179\" y=\"18\" width=\"122\" height=\"17\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Middle\">");
-		sb.append("<font fontName=\"Courier New\" size=\"10\" isBold=\"true\"/>");
-		sb.append("</textElement>");
-		sb.append("<text><![CDATA[Politica de senha]]></text>");
-		sb.append("</staticText>");
-		
-		sb.append("<staticText>");
-		sb.append("<reportElement x=\"300\" y=\"18\" width=\"159\" height=\"17\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Middle\">");
-		sb.append("<font fontName=\"Courier New\" size=\"10\" isBold=\"true\"/>");
-		sb.append("</textElement>");
-		sb.append("<text><![CDATA[Data de checagem e login]]></text>");
-		sb.append("</staticText>");
-		
-		sb.append("<staticText>");
-		sb.append("<reportElement x=\"459\" y=\"18\" width=\"108\" height=\"17\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Middle\">");
-		sb.append("<font fontName=\"Courier New\" size=\"10\" isBold=\"true\"/>");
-		sb.append("</textElement>");
-		sb.append("<text><![CDATA[Administrador]]></text>");
-		sb.append("</staticText>");
-		*/
-		
 		sb.append("</band>");
 		sb.append("</columnHeader>");
 		
 		
+		//detail
 		sb.append("<detail>");
-		sb.append("<band height=\"29\" splitType=\"Stretch\">");
+		sb.append("<band height=\""+heightBand+"\" splitType=\"Stretch\">");
 		sb.append("<rectangle>");
 		sb.append("<reportElement positionType=\"Float\" stretchType=\"RelativeToTallestObject\" "
-				+ "isPrintRepeatedValues=\"false\" x=\"0\" y=\"0\" width=\"802\" height=\"29\" "
+				+ "isPrintRepeatedValues=\"false\" x=\"0\" y=\"0\" width=\""+wPage+"\" height=\""+heightBand+"\" "
 				+ "isPrintWhenDetailOverflows=\"true\" forecolor=\"#FFFFFF\" backcolor=\"#CCCCCC\" "
 				+ "uuid=\""+UUID.randomUUID().toString()+"\">");
 		sb.append("<printWhenExpression><![CDATA[new Boolean(($V{COLUMN_COUNT}.intValue() % 2) != 0)]]></printWhenExpression>");
@@ -238,11 +161,24 @@ public class Template3 {
 		
 		x = 11;
 		y = 0;
+		l = 1;
+		next = 2;
 		for(int i=0;i<columns.length;i++) {
+			if(x > (wPage - 50)) {
+				l += 1;
+			}
 			
-			if(x > 750) {
+			//linha 2
+			if(l == 2 && next == 2) {
 				y = 14;
 				x = 67;
+				next += 1;
+			}
+			//linha 3
+			if(l == 3 && next == 3) {
+				y = 29;
+				x = 95;
+				next += 1;
 			}
 			
 			sb.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"true\">");
@@ -256,122 +192,7 @@ public class Template3 {
 			
 			x = x + widthColumns[i];
 		}
-		
-		//detail
-		
-		/*
-		sb.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"true\">");
-		sb.append("<reportElement stretchType=\"RelativeToTallestObject\" x=\"11\" y=\"0\" width=\"44\" height=\"14\""
-				+ " uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Top\">");
-		sb.append("<font fontName=\"Courier New\"/>");
-		sb.append("</textElement>");
-		sb.append("<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>");
-		sb.append("</textField>");
-		
-		sb.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"true\">");
-		sb.append("<reportElement stretchType=\"RelativeToTallestObject\" x=\"55\" y=\"0\" width=\"100\" height=\"14\" "
-				+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Top\">");
-		sb.append("<font fontName=\"Courier New\"/>");
-		sb.append("</textElement>");
-		sb.append("<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>");
-		sb.append("</textField>");
-		
-		sb.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"true\">");
-		sb.append("<reportElement stretchType=\"RelativeToTallestObject\" x=\"154\" y=\"0\" width=\"89\" height=\"14\" "
-				+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Top\">");
-		sb.append("<font fontName=\"Courier New\"/>");
-		sb.append("</textElement>");
-		sb.append("<textFieldExpression><![CDATA[$F{usercode}]]></textFieldExpression>");
-		sb.append("</textField>");
-		
-		sb.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"true\">");
-		sb.append("<reportElement stretchType=\"RelativeToTallestObject\" x=\"382\" y=\"1\" width=\"108\" height=\"14\" "
-				+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Top\">");
-		sb.append("<font fontName=\"Courier New\"/>");
-		sb.append("</textElement>");
-		sb.append("<textFieldExpression><![CDATA[$F{registration}]]></textFieldExpression>");
-		sb.append("</textField>");
-		
-		sb.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"true\">");
-		sb.append("<reportElement stretchType=\"RelativeToTallestObject\" x=\"490\" y=\"1\" width=\"100\" height=\"14\" "
-				+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Top\">");
-		sb.append("<font fontName=\"Courier New\"/>");
-		sb.append("</textElement>");
-		sb.append("<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>");
-		sb.append("</textField>");
-		
-		sb.append("<textField isStretchWithOverflow=\"true\" pattern=\"dd/MM/yyyy HH:mm:ss\" isBlankWhenNull=\"true\">");
-		sb.append("<reportElement stretchType=\"RelativeToTallestObject\" x=\"589\" y=\"1\" width=\"100\" height=\"14\" "
-				+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Top\">");
-		sb.append("<font fontName=\"Courier New\"/>");
-		sb.append("</textElement>");
-		sb.append("<textFieldExpression><![CDATA[$F{dateCreated}]]></textFieldExpression>");
-		sb.append("</textField>");
-		
-		sb.append("<textField isStretchWithOverflow=\"true\" pattern=\"dd/MM/yyyy HH:mm:ss\" isBlankWhenNull=\"true\">");
-		sb.append("<reportElement stretchType=\"RelativeToTallestObject\" x=\"688\" y=\"1\" width=\"107\" height=\"14\" "
-				+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Top\">");
-		sb.append("<font fontName=\"Courier New\"/>");
-		sb.append("</textElement>");
-		sb.append("<textFieldExpression><![CDATA[$F{dateLastLogin}]]></textFieldExpression>");
-		sb.append("</textField>");
-		sb.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"true\">");
-		sb.append("<reportElement stretchType=\"RelativeToTallestObject\" x=\"67\" y=\"14\" width=\"113\" height=\"14\" "
-				+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Top\">");
-		sb.append("<font fontName=\"Courier New\"/>");
-		sb.append("</textElement>");
-		sb.append("<textFieldExpression><![CDATA[$F{passwordChange}]]></textFieldExpression>");
-		sb.append("</textField>");
-		sb.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"true\">");
-		sb.append("<reportElement stretchType=\"RelativeToTallestObject\" x=\"179\" y=\"14\" width=\"122\" height=\"14\" "
-				+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Top\">");
-		sb.append("<font fontName=\"Courier New\"/>");
-		sb.append("</textElement>");
-		sb.append("<textFieldExpression><![CDATA[$F{passwordPolicy}]]></textFieldExpression>");
-		sb.append("</textField>");
-		sb.append("<textField isStretchWithOverflow=\"true\" pattern=\"dd/MM/yyyy HH:mm:ss\" isBlankWhenNull=\"true\">");
-		sb.append("<reportElement stretchType=\"RelativeToTallestObject\" x=\"300\" y=\"14\" width=\"159\" height=\"14\" "
-				+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Top\">");
-		sb.append("<font fontName=\"Courier New\"/>");
-		sb.append("</textElement>");
-		sb.append("<textFieldExpression><![CDATA[$F{dateLastChangeLogin}]]></textFieldExpression>");
-		sb.append("</textField>");
-		sb.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"true\">");
-		sb.append("<reportElement stretchType=\"RelativeToTallestObject\" x=\"459\" y=\"14\" width=\"108\" height=\"14\" "
-				+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Top\">");
-		sb.append("<font fontName=\"Courier New\"/>");
-		sb.append("</textElement>");
-		sb.append("<textFieldExpression><![CDATA[$F{administrator}]]></textFieldExpression>");
-		sb.append("</textField>");
-		sb.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"true\">");
-		sb.append("<reportElement stretchType=\"RelativeToTallestObject\" x=\"317\" y=\"0\" width=\"64\" height=\"14\" "
-				+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Top\">");
-		sb.append("<font fontName=\"Courier New\"/>");
-		sb.append("</textElement>");
-		sb.append("<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>");
-		sb.append("</textField>");
-		sb.append("<textField isStretchWithOverflow=\"true\" isBlankWhenNull=\"true\">");
-		sb.append("<reportElement stretchType=\"RelativeToTallestObject\" x=\"242\" y=\"0\" width=\"76\" height=\"14\" "
-				+ "uuid=\""+UUID.randomUUID().toString()+"\"/>");
-		sb.append("<textElement verticalAlignment=\"Top\">");
-		sb.append("<font fontName=\"Courier New\"/>");
-		sb.append("</textElement>");
-		sb.append("<textFieldExpression><![CDATA[$F{idDomain}]]></textFieldExpression>");
-		sb.append("</textField>");
-		*/
-		
+				
 		sb.append("</band>");
 		sb.append("</detail>");
 		
@@ -379,12 +200,12 @@ public class Template3 {
 		sb.append("<pageFooter>");
 		sb.append("<band height=\"23\" splitType=\"Stretch\">");
 		sb.append("<textField>");
-		sb.append("<reportElement x=\"682\" y=\"3\" width=\"80\" height=\"20\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
+		sb.append("<reportElement x=\""+(wPage-220)+"\" y=\"3\" width=\"80\" height=\"20\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
 		sb.append("<textElement textAlignment=\"Right\"/>");
 		sb.append("<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+\" /\"]]></textFieldExpression>");
 		sb.append("</textField>");
 		sb.append("<textField evaluationTime=\"Report\">");
-		sb.append("<reportElement x=\"762\" y=\"3\" width=\"40\" height=\"20\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
+		sb.append("<reportElement x=\""+(wPage-140)+"\" y=\"3\" width=\"40\" height=\"20\" uuid=\""+UUID.randomUUID().toString()+"\"/>");
 		sb.append("<textFieldExpression><![CDATA[\" \" + $V{PAGE_NUMBER}]]></textFieldExpression>");
 		sb.append("</textField>");
 		sb.append("</band>");
@@ -392,7 +213,7 @@ public class Template3 {
 		
 		sb.append("</jasperReport>");
 		
-		
+		System.out.println(sb.toString());
 		return sb.toString();
 	}
 

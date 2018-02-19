@@ -50,6 +50,9 @@ public class Population {
 			u.setPasswordPolicy(i+"98");
 			u.setDateLastChangeLogin("10/10/10");
 			u.setAdministrator("false");
+			u.setFuncionario("talvez");
+			u.setObstruido("true");
+			u.setCadastrado("false");
 			
 			usuarios.add(u);
 		}
